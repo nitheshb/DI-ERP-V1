@@ -1,0 +1,117 @@
+@import url("https://fonts.googleapis.com/css2?family=Staatliches&display=swap");
+
+ .folder {
+	 position: relative;
+	 transition: all 0.3s ease;
+   width: 160px
+}
+ .folder-front {
+	 position: relative;
+	 height: 100px;
+	 width: 160px;
+	 background-color: #5166FA;
+	 border-radius: 10px;
+	 border-top-left-radius: 0px;
+	 transform-origin: bottom right;
+}
+ .folder-front::before {
+	 content: "";
+	 /* width: 42px;
+	 height: 15px;
+	 position: absolute;
+	 top: -10px;
+	 background-color: #5166FA;
+	 border-radius: 5px; */
+   position: absolute;
+   top: -10px;
+   width: 35%;
+    height: 12px;
+    float: right;
+    background-color: transparent;
+    border-bottom: 12px solid #5166FA;
+    border-right: 12px solid transparent;
+    border-top-left-radius: 8px;
+    /* left:104px; */
+}
+ .folder-back {
+	 position: absolute;
+	 z-index: 101;
+	 height: 135px;
+	 width: 145px;
+	 background-color: #5166FA;
+	 transform-origin: bottom left;
+	 border-bottom-left-radius: 8px;
+	 transition: all 0.3s ease;
+}
+ .folder-right {
+	 position: absolute;
+	 z-index: 101;
+	 height: 135px;
+	 top: 0%;
+	 right: 0%;
+	 width: 50px;
+	 background-color: #5166FA;
+	 border-bottom-right-radius: 8px;
+	 border-top-right-radius: 8px;
+
+	 transition: all 0.3s ease;
+	 transform-origin: bottom left;
+}
+ .paper {
+	 position: absolute;
+	 z-index: 8;
+	 top: 7px;
+	 width: 70px;
+	 height: 50px;
+	 background-color: #acc1da;
+	 left: 20%;
+	 border-radius: 5px;
+}
+ .paper:nth-child(2) {
+	 top: 14px;
+	 z-index: 9;
+	 background-color: #c2d1e4;
+}
+ .paper:nth-child(3) {
+	 top: 20px;
+	 z-index: 10;
+	 background-color: white;
+}
+ .folder:hover {
+	 transform: translateY(-8px);
+	 transition: all 0.3s linear;
+}
+ .folder:hover .folder-back {
+	 transform: skew(5deg) scaleY(0.7);
+	 transform-origin: bottom left;
+	 transition: all 0.3s linear;
+}
+ .folder:hover .folder-front {
+	 transition: all 0.3s linear;
+}
+ .folder:hover .folder-right {
+	 transform-origin: bottom right;
+	 transform: skew(-5deg) scaleY(0.7);
+	 transition: all 0.3s linear;
+}
+ .files {
+	 position: relative;
+	 font-size: 18px;
+	 color: white;
+	 text-transform: uppercase;
+	 z-index: 1000;
+	 padding-left: 10px;
+	 padding-top: 18px;
+	 letter-spacing: 3px;
+	 font-family: "Staatliches", cursive;
+}
+ \part from folder .folder-front::before {
+	 content: "";
+	 width: 15px;
+	 height: 10px;
+	 background-color: #5166FA;
+	 padding: 5px;
+	 position: absolute;
+	 top: -10px;
+	 border-radius: 4px;
+}
