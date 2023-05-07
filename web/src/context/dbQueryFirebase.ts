@@ -273,7 +273,7 @@ export const getLeadsByAdminStatus = (orgId, snapshot, data, error) => {
   const { status, projAccessA } = data
   const itemsQuery = query(
     collection(db, `${orgId}_leads`),
-    where('Status', 'in', status)
+    // where('Status', 'in', status)
     //  orderBy('Date')
   )
   console.log('hello by Status', onSnapshot(itemsQuery, snapshot, error))
@@ -603,6 +603,7 @@ export const getPlanDiagramByPhase = async (orgId, data, snapshot, error) => {
 }
 
 export const getUser = async (uid: string) => {
+  console.log('check this', uid)
   try {
     const userRef = doc(db, 'users', uid)
     const docSnap = await getDoc(userRef)

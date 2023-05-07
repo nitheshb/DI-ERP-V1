@@ -121,14 +121,20 @@ const ExecutiveHomeViewerPage = ({ leadsTyper, isClicked, setIsClicked }) => {
   // }, [])
 
   useEffect(() => {
+    console.log('check this for itt1')
+
     setFetchLeadsLoader(true)
     if (selLeadsOf?.value == 'myleads') {
       const { uid } = user
-      getMyLeadsOrAnyUserLeads(uid)
+      // getMyLeadsOrAnyUserLeads(uid)
+      getAdminAllLeads()
+
     } else if (selLeadsOf?.value == 'cpleads') {
       getCpTeamLeads()
     } else if (selLeadsOf?.value == 'teamleads') {
+      console.log('check this for it')
       if (user?.role?.includes(USER_ROLES.ADMIN)) {
+        console.log('check this for it')
         getAdminAllLeads()
       } else {
         getMyTeamLeads()
@@ -257,6 +263,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper, isClicked, setIsClicked }) => {
           //   y.coveredA = { a: data.coveredA }
           //   addLeadSupabase(data)
           // })
+          console.log('cehck it ', usersListA)
           await setLeadsFetchedRawData(usersListA)
           await serealizeData(usersListA)
         },
