@@ -9,6 +9,8 @@ import { usePageLoadingContext } from '@redwoodjs/router'
 import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 
+import MarkeingMessagesList from 'src/components/A_ProjModule/MarketingMessagesList'
+import ProjectsTaskHome from 'src/components/A_ProjModule/ProjTaskHome'
 import SlimSideMenuBar from 'src/components/A_SideMenu/slimSideMenu'
 import AllBankDetailsView from 'src/components/All_BankDetailsView'
 import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
@@ -23,8 +25,6 @@ import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
 import HeadSideBar from '../../components/HeadSideBar/HeadSideBar'
 import ProjectsMHomeBody from '../../components/ProjectsMHomeBody/ProjectsMHomeBody'
 import SiderForm from '../../components/SiderForm/SiderForm'
-import MarkeingMessagesList from 'src/components/A_ProjModule/MarketingMessagesList'
-import ProjectsTaskHome from 'src/components/A_ProjModule/ProjTaskHome'
 
 const HomePage = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -370,27 +370,22 @@ const HomePage = () => {
             />
 
             <div className="flex-grow   items-center overflow-y-auto no-scrollbar  h-[98%]  px-300  pt-300">
-            <HeadNavBar2
-              selModule ={selModule}
-              setSelModule={setSelModule}
-            />
-            {(viewable === 'Marketing' &&
-(
-  <>
-
-
+              <HeadNavBar2 selModule={selModule} setSelModule={setSelModule} />
+              {viewable === 'Marketing' && (
+                <>
                   <div className="mt-2 mx-1">
                     <section className="w-full py-4  leading-7 text-gray-900 bg-white  rounded-md">
                       <div className="box-border px-4 mx-auto border-solid sm:px-6 md:px-6 lg:px-8 max-w-full ">
                         <div className="flex flex-col  leading-7  text-gray-900 border-0 border-gray-200 ">
-                          <MarkeingMessagesList title={'WhatsApp Message Templates'} />
+                          <MarkeingMessagesList
+                            title={'WhatsApp Message Templates'}
+                          />
                         </div>
                       </div>
                     </section>
                   </div>
                 </>
-)
-            )}
+              )}
               {(viewable === 'Bank Accounts' ||
                 viewable === 'Virtual Accounts') && (
                 <>
@@ -438,17 +433,17 @@ const HomePage = () => {
                 </>
               )}
               {(viewable === 'Home' || viewable === 'MyProjectTasks') && (
-                <ProjectsTaskHome leadsTyper={undefined} />)
-              }
+                <ProjectsTaskHome leadsTyper={undefined} />
+              )}
               {viewable != 'inProgress' &&
-              viewable != 'Home' &&
-              viewable != 'MyProjectTasks' &&
+                viewable != 'Home' &&
+                viewable != 'MyProjectTasks' &&
                 viewable != 'Projects Lead Report' &&
                 viewable != 'Campaign Budget Report' &&
                 viewable != 'Bank Accounts' &&
                 viewable != 'Virtual Accounts' &&
                 viewable != 'unitsInventory' &&
-                viewable != 'Marketing'  && (
+                viewable != 'Marketing' && (
                   <>
                     <div className="">
                       <div className="flex items-center justify-between py-2 pb-8 ">
@@ -461,53 +456,51 @@ const HomePage = () => {
                               viewable != 'Virtual Accounts' &&
                               viewable != 'unitsInventory' && (
                                 <>
-
-
                                   {projects.length > 0 ? (
                                     <section className="bg-white py-2 rounded-sm">
-                                       <div className="px-4">
-                                    <div className="flex items-center justify-between py-2 pb-4  ">
-                                      <span className="relative  flex items-center w-auto text-md font-bold leading-none pl-0 font-Playfair">
-                                        Projects {viewable}
-                                      </span>
-                                      <button
-                                        onClick={() =>
-                                          setIsNewProjectOpen(true)
-                                        }
-                                        className="flex items-center justify-center h-8 px-4  bg-gray-200 ml-auto text-sm font-medium rounded hover:bg-gray-300"
-                                      >
-                                        <svg
-                                          className="w-5 h-5"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          fill="none"
-                                          viewBox="0 0 24 24"
-                                          stroke="currentColor"
-                                        >
-                                          <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                      <div className="px-4">
+                                        <div className="flex items-center justify-between py-2 pb-4  ">
+                                          <span className="relative  flex items-center w-auto text-md font-bold leading-none pl-0 font-Playfair">
+                                            Projects {viewable}
+                                          </span>
+                                          <button
+                                            onClick={() =>
+                                              setIsNewProjectOpen(true)
+                                            }
+                                            className="flex items-center justify-center h-8 px-4  bg-gray-200 ml-auto text-sm font-medium rounded hover:bg-gray-300"
+                                          >
+                                            <svg
+                                              className="w-5 h-5"
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke="currentColor"
+                                            >
+                                              <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                              />
+                                            </svg>
+                                            <span className="ml-2 leading-none">
+                                              Add Project
+                                            </span>
+                                          </button>
+                                        </div>
+                                      </div>
+                                      <section className="mx-2 rounded-xl bg-white shadow p-2">
+                                        {projects.map((project) => (
+                                          <ProjectsMHomeBody
+                                            key={project.uid}
+                                            project={project}
+                                            onSliderOpen={() => {
+                                              setProject(project)
+                                              setIsEditProjectOpen(true)
+                                            }}
+                                            isEdit={false}
                                           />
-                                        </svg>
-                                        <span className="ml-2 leading-none">
-                                          Add Project
-                                        </span>
-                                      </button>
-                                    </div>
-                                  </div>
-                                  <section className="mx-2 rounded-xl bg-white shadow p-2">
-                                      {projects.map((project) => (
-                                        <ProjectsMHomeBody
-                                          key={project.uid}
-                                          project={project}
-                                          onSliderOpen={() => {
-                                            setProject(project)
-                                            setIsEditProjectOpen(true)
-                                          }}
-                                          isEdit={false}
-                                        />
-                                      ))}
+                                        ))}
                                       </section>
                                     </section>
                                   ) : (

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { Dialog } from '@headlessui/react'
 import { RadioGroup } from '@headlessui/react'
@@ -45,6 +45,7 @@ import { currentStatusDispFun } from 'src/util/leadStatusDispFun'
 
 import AssigedToDropComp from './assignedToDropComp'
 import Loader from './Loader/Loader'
+import Confetti from './shared/confetti'
 
 const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
   const d = new window.Date()
@@ -57,6 +58,7 @@ const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
   const [closeWindowMode, setCloseWindowMode] = useState(false)
   const [trashMode, setTrashMode] = useState(false)
   const [binReason, setBinreason] = useState('DUPLICATE_ENTRY')
+  const confettiRef = useRef(null)
 
   const [startDate, setStartDate] = useState(d)
   const [customerDetailsTuned, setCustomerDetailsTuned] = useState({})
@@ -196,6 +198,27 @@ const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
     },
   ]
 
+  const ProductsList = [
+    {
+      name: 'Goal Truss',
+      img: '/apart1.svg',
+    },
+    {
+      name: 'Box Truss',
+      img: '/plot.svg',
+    },
+    {
+      name: 'Roof Truss',
+      img: '/weekend.svg',
+    },
+    {
+      name: 'LED Stand',
+      img: '/villa.svg',
+    },
+  ]
+
+
+
   const devTypeA = [
     {
       name: 'Outright',
@@ -208,7 +231,12 @@ const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
   ]
   const [loading, setLoading] = useState(false)
   const [formMessage, setFormMessage] = useState('')
-  const [selected, setSelected] = useState({})
+  const [selected, setSelected] = useState( {
+    label: 'IndiaMart',
+    value: 'indiamart',
+    rep: ['IndiaMart', 'indiamart', 'Indiamart'],
+    img: '/Imart_logo.png',
+  })
   const [devType, setdevType] = useState(devTypeA[0])
   const [founDocs, setFoundDocs] = useState([])
 
@@ -224,6 +252,7 @@ const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
     await setdevType(sel)
   }
   const onSubmitFun = async (data, resetForm) => {
+
     // set status as uploaded
     setLoading(true)
     if (user?.role?.includes(USER_ROLES.CP_AGENT)) {
@@ -254,6 +283,7 @@ const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
     } = data
 
     // updateUserRole(uid, deptVal, myRole, email, 'nitheshreddy.email@gmail.com')
+    confettiRef.current.fire()
 
     const foundLength = await checkIfLeadAlreadyExists(
       `${orgId}_leads`,
@@ -316,21 +346,23 @@ const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
         }
         //
       }
+
+
       // update the leads bank status
-      await sendWhatAppTextSms(
-        mobileNo,
-        `Thank you ${name} for choosing the world class ${project || 'project'}`
-      )
+      // await sendWhatAppTextSms(
+      //   mobileNo,
+      //   `Thank you ${name} for choosing the world class ${project || 'project'}`
+      // )
 
       // msg2
-      await sendWhatAppMediaSms(mobileNo)
-      const smg =
-        assignedTo === ''
-          ? 'You Interested will be addressed soon... U can contact 9123456789 mean while'
-          : 'we have assigned dedicated manager to you. Mr.Ram as ur personal manager'
+      // await sendWhatAppMediaSms(mobileNo)
+      // const smg =
+      //   assignedTo === ''
+      //     ? 'You Interested will be addressed soon... U can contact 9123456789 mean while'
+      //     : 'we have assigned dedicated manager to you. Mr.Ram as ur personal manager'
 
-      // msg3
-      sendWhatAppTextSms(mobileNo, smg)
+      // // msg3
+      // sendWhatAppTextSms(mobileNo, smg)
       resetForm()
       setFormMessage('Saved Successfully..!')
       setLoading(false)
@@ -426,7 +458,7 @@ const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
                 cDate: customerDetailsTuned?.Date || '',
                 mobileNo: customerDetailsTuned?.phone || '',
                 email: customerDetailsTuned?.email || '',
-                source: customerDetailsTuned?.source || '',
+                source: customerDetailsTuned?.source || selected?.value ||  '',
                 project: customerDetailsTuned?.projectName || '',
                 projectId: customerDetailsTuned?.projectId || '',
                 assignedTo: customerDetailsTuned?.name || '',
@@ -500,12 +532,113 @@ const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
                           options={sourceList}
                         />
                       </div>
-                    </div>
-                    {/* 2 */}
-                    <div className="md:flex flex-row md:space-x-4 w-full text-xs mt-">
                       <div className="mb-3 space-y-2 w-full text-xs">
                         <TextField label="Email" name="email" type="text" />
                       </div>
+                    </div>
+                    {/* 2 */}
+                    <div className="md:flex flex-row md:space-x-4 w-full text-xs mt-">
+
+                        <div className="mb-3  w-full text-xs">
+                          <div className=" flex flex-col   px-1  ">
+                            <label className="font- text-[#053219]  text-sm mb-2">
+                              Type<abbr title="required"></abbr>
+                            </label>
+                            <RadioGroup value={selected} onChange={(value)=>{
+                              typeSel(value);
+                              formik.setFieldValue('source', value.value)
+
+                              }}>
+                              <div className="grid grid-cols-4 gap-4">
+                                {sourceListItems.map((plan) => (
+                                  <RadioGroup.Option
+                                    key={plan.label}
+                                    value={plan}
+                                    className={({ active, checked }) =>
+                                      `${
+                                        active
+                                          ? 'ring-2 ring-offset-2  ring-white ring-opacity-60 col-span-2'
+                                          : ''
+                                      }
+                ${
+                  selected.label == plan.label
+                    ? 'ring-1  ring-green-400 bg-opacity-75 text-black'
+                    : 'bg-[#f7f9f8]'
+                }
+                  relative rounded-lg px-5 py-2 cursor-pointer flex focus:outline-none col-span-2`
+                                    }
+                                  >
+                                    {({ active, checked }) => (
+                                      <>
+                                        <div className=" col-span-2 flex justify-center contents">
+                                          <div className="flex items-center">
+                                            <div className="text-sm">
+                                              <RadioGroup.Label
+                                                as="p"
+                                                className={`font-medium  ${
+                                                  selected.label == plan.label
+                                                    ? 'text-gray-900'
+                                                    : 'text-gray-900'
+                                                }`}
+                                              >
+                                                <img
+                                                  className="w-8 h-8 inline"
+                                                  alt=""
+                                                  src={plan.img}
+                                                ></img>{' '}
+                                              </RadioGroup.Label>
+                                            </div>
+                                          </div>
+                                          <div className="mt-2 ml-1 mr-2 text-sm text-b ">
+                                            {plan.label}
+                                          </div>
+                                          {true && (
+                                            <div
+                                              className={`${
+                                                selected.label == plan.label
+                                                  ? 'flex-shrink-0 text-white ml-auto'
+                                                  : 'flex-shrink-0 text-black ml-auto'
+                                              } mt-2`}
+                                            >
+                                              <svg
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                className="w-5 h-5"
+                                              >
+                                                <circle
+                                                  cx={11}
+                                                  cy={11}
+                                                  r={11}
+                                                  fill={
+                                                    selected.label == plan.label
+                                                      ? '#61d38a'
+                                                      : ''
+                                                  }
+                                                />
+                                                <path
+                                                  d="M6 11l3 3 7-7"
+                                                  stroke={
+                                                    selected.label == plan.label
+                                                      ? '#fff'
+                                                      : ''
+                                                  }
+                                                  strokeWidth={1.5}
+                                                  strokeLinecap="round"
+                                                  strokeLinejoin="round"
+                                                />
+                                              </svg>
+                                            </div>
+                                          )}
+                                        </div>
+                                      </>
+                                    )}
+                                  </RadioGroup.Option>
+                                ))}
+                              </div>
+                            </RadioGroup>
+                          </div>
+
+                        </div>
                       <div className="mb-3 space-y-2 w-full text-xs">
                         <span className="inline">
                           <label className="label font-regular text-sm block mb-1">
@@ -527,136 +660,7 @@ const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
                             dateFormat="MMMM d, yyyy"
                           />
                         </span>
-                      </div>
-                    </div>
-
-                    {trashMode && (
-                      <>
-                        <div className="mt-8">
-                          <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
-                            More Details<abbr title="required">*</abbr>
-                          </label>
-                        </div>
-                        <div className="md:flex md:flex-row md:space-x-4 w-full text-xs ">
-                          <div className="w-full flex flex-col mb-3 mt-2">
-                            <CustomSelect
-                              name="source"
-                              label="Bin Reason*"
-                              className="input mt-3"
-                              onChange={(value) => {
-                                // call db to update
-                                setBinreason(value.value)
-                                // formik.setFieldValue('source', value.value)
-                              }}
-                              value={binReason}
-                              options={leadBinReasonList}
-                            />
-                          </div>{' '}
-                        </div>
-                        <div className="mt-5 mt-8 text-right md:space-x-3 md:block flex flex-col-reverse">
-                          <button
-                            className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
-                            type="reset"
-                            onClick={() => {
-                              setTrashMode(false)
-                            }}
-                          >
-                            Reset
-                          </button>
-                          <button
-                            className="mb-2 md:mb-0 bg-green-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white  rounded-sm hover:shadow-lg hover:bg-green-500"
-                            type="reset"
-                            disabled={loading}
-                            onClick={async () => {
-                              await setLoading(true)
-                              await updateLeadLakeStatus(
-                                orgId,
-                                customerDetailsTuned?.id,
-                                {
-                                  status: binReason,
-                                }
-                              )
-                              await setLoading(false)
-                              await enqueueSnackbar('Lead moved Successfuly', {
-                                variant: 'success',
-                              })
-                            }}
-                          >
-                            {loading && <Loader />}
-                            Bin
-                          </button>
-                          <button
-                            className="mb-2 md:mb-0 bg-green-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white  rounded-sm hover:shadow-lg hover:bg-green-500"
-                            type="reset"
-                            onClick={async () => {
-                              await setLoading(true)
-                              await updateLeadLakeStatus(
-                                orgId,
-                                customerDetailsTuned?.id,
-                                {
-                                  status: binReason,
-                                }
-                              )
-                              await setLoading(false)
-                              await enqueueSnackbar('Lead moved Successfuly', {
-                                variant: 'success',
-                              })
-                              await setCloseWindowMode(true)
-                            }}
-                            disabled={loading}
-                          >
-                            {loading && <Loader />}
-                            Bin & Close
-                          </button>
-                        </div>{' '}
-                      </>
-                    )}
-                    {!trashMode && (
-                      <>
-                        <div className="mt-8">
-                          <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
-                            More Details<abbr title="required">*</abbr>
-                          </label>
-                        </div>
-                        <div className="border-t-4 rounded-xl w-16 mt-1  border-green-600"></div>
-
-                        {/* </div>
-                      <div className="rounded-lg bg-white border border-gray-100 p-4 mt-4"> */}
-                        {/* 3 */}
-                        <div className="md:flex md:flex-row md:space-x-4 w-full text-xs ">
-                          <div className="w-full flex flex-col mb-3 mt-2">
-                            <CustomSelect
-                              name="source"
-                              label="Lead Source*"
-                              className="input mt-3"
-                              onChange={(value) => {
-                                formik.setFieldValue('source', value.value)
-                              }}
-                              value={formik.values.source}
-                              options={sourceList}
-                            />
-                          </div>
-
-                          <div className="w-full flex flex-col mb-3 mt-2">
-                            <CustomSelect
-                              name="project"
-                              label="Select Project"
-                              className="input mt-3"
-                              onChange={(value) => {
-                                console.log('value of project is ', value)
-                                formik.setFieldValue('projectId', value.uid)
-                                formik.setFieldValue('project', value.value)
-                              }}
-                              value={formik.values.project}
-                              // options={aquaticCreatures}
-                              options={projectList}
-                            />
-                          </div>
-                        </div>
-                        {/* 4 */}
-                        {!user?.role?.includes(USER_ROLES.CP_AGENT) && (
-                          <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
-                            <div className="w-full flex flex-col mb-3">
+                        <div className="w-full flex flex-col mb-3">
                               <CustomSelect
                                 name="assignedTo"
                                 label="Assign To"
@@ -680,25 +684,27 @@ const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
                                 Please fill out this field.
                               </p>
                             </div>
-                          </div>
-                        )}
+                      </div>
+                    </div>
 
-                        {/* 6 */}
-                        <div className=" mt-8 ">
-                          <label className="font-semibold text-[#053219]  text-sm  mb-1 ">
-                            Advanced<abbr title="required"></abbr>
+
+                    {!trashMode && (
+                      <>
+                        <div className="mt-8">
+                          <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
+                          Products<abbr title="required">*</abbr>
                           </label>
                         </div>
-                        <div className="border-t-4 rounded-xl w-16 mt-1 border-green-600"></div>
+                        <div className="border-t-4 rounded-xl w-16 mt-1  border-green-600"></div>
+
+
 
                         <div className="">
                           <div className=" flex flex-col  mt-4  px-1 py-1 ">
-                            <label className="font- text-[#053219]  text-sm mb-2">
-                              Type<abbr title="required"></abbr>
-                            </label>
+
                             <RadioGroup value={selected} onChange={typeSel}>
                               <div className="grid grid-cols-4 gap-4">
-                                {plans.map((plan) => (
+                                {ProductsList.map((plan) => (
                                   <RadioGroup.Option
                                     key={plan.name}
                                     value={plan}
@@ -785,30 +791,11 @@ const AddLeadForm = ({ title, dialogOpen, customerDetails }) => {
                               </div>
                             </RadioGroup>
                           </div>
-                          <div className="md:flex md:flex-row md:space-x-4 w-full text-xs mt-3 mx-2">
-                            <div className="w-full flex flex-col mb-3">
-                              <CustomSelect
-                                name="budget"
-                                label="Budget"
-                                className="input mt-3"
-                                onChange={(value) => {
-                                  formik.setFieldValue('budget', value.value)
-                                }}
-                                value={formik.values.budget}
-                                options={budgetList}
-                              />
-                              <p
-                                className="text-sm text-red-500 hidden mt-3"
-                                id="error"
-                              >
-                                Please fill out this field.
-                              </p>
-                            </div>
-                          </div>
+
                         </div>
                         <div className="mb-8">
                           <p className="text-xs text-red-400 text-right my-3">
-                            Mobile No / Email is required{' '}
+                            Mobile No{' '}
                             <abbr title="Required field">*</abbr>
                           </p>
                           {formMessage === 'Saved Successfully..!' && (
@@ -1084,6 +1071,8 @@ source={row.Source.toString()}
                               })}
                             </p>
                           )}
+                              <Confetti ref={confettiRef} />
+
                           <div className="mt-5 mt-8 text-right md:space-x-3 md:block flex flex-col-reverse">
                             <button
                               className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
